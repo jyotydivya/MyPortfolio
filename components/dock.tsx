@@ -68,7 +68,7 @@ export default function Dock({ onAppClick, onLaunchpadClick, activeAppIds, isDar
       return
     }
 
-    const isWideApp = app.id === "vscode" || app.id === "resume"
+    const isWideApp = app.id === "vscode" || app.id === "resume" || app.id === "mail" || app.id === "safari"
     onAppClick({
       id: app.id,
       title: app.title,

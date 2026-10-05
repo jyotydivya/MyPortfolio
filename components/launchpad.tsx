@@ -42,7 +42,7 @@ export default function Launchpad({ onAppClick, onClose }: LaunchpadProps) {
   }, [searchTerm])
 
   const handleAppClick = (app: (typeof launchpadApps)[0]) => {
-    const isWideApp = app.id === "vscode" || app.id === "resume"
+    const isWideApp = app.id === "vscode" || app.id === "resume" || app.id === "mail" || app.id === "safari"
     onAppClick({
       id: app.id,
       title: app.title,

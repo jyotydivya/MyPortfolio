@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="pdfGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF4B4B"/>
+      <stop offset="100%" stop-color="#C91818"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <rect x="18" y="12" width="64" height="76" rx="10" fill="#FFFFFF" filter="url(#shadow)"/>
+  <rect x="18" y="12" width="64" height="76" rx="10" fill="none" stroke="#E2E8F0" stroke-width="2"/>
+  <path d="M58 12 L82 36 L58 36 Z" fill="#CBD5E1"/>
+  <rect x="26" y="46" width="48" height="24" rx="4" fill="url(#pdfGrad)"/>
+  <text x="50" y="63" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="900" fill="#FFFFFF" text-anchor="middle">PDF</text>
+  <circle cx="34" cy="78" r="2" fill="#94A3B8"/>
+  <line x1="42" y1="78" x2="68" y2="78" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/>
+</svg>

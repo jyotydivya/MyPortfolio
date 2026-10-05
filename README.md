@@ -2,6 +2,9 @@
 
 An immersive, interactive macOS Sonoma-inspired Web OS portfolio website built with **Next.js 15**, **React 19**, **TypeScript**, and **Tailwind CSS**.
 
+🌐 **Live Demo:** [https://myportfolio-nq2b.onrender.com/](https://myportfolio-nq2b.onrender.com/)
+
+[![Live Demo on Render](https://img.shields.io/badge/Render-Live_Demo-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://myportfolio-nq2b.onrender.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Next.js](https://img.shields.io/badge/Next.js-15.2.4-black?logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19.0-61DAFB?logo=react)](https://react.dev/)
@@ -20,6 +23,7 @@ An immersive, interactive macOS Sonoma-inspired Web OS portfolio website built w
 ☁️ **AWS Certified Cloud Practitioner** & **AWS Certified AI Practitioner**  
 💼 Former **AI Software Engineer Intern** @ **IBM – Adroit Technologies** (Generative AI with Google Gemini & Flask)  
 
+- **Live Website**: [https://myportfolio-nq2b.onrender.com/](https://myportfolio-nq2b.onrender.com/)
 - **GitHub**: [github.com/jyotydivya](https://github.com/jyotydivya)
 - **LinkedIn**: [linkedin.com/in/divya-jyoty](https://linkedin.com/in/divya-jyoty)
 - **Email**: [jyotydivya844@gmail.com](mailto:jyotydivya844@gmail.com)

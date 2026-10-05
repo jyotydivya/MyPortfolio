@@ -46,6 +46,12 @@ export default function Menubar({
     hour12: true,
   })
 
+  const formattedShortTime = time.toLocaleString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  })
+
   useEffect(() => {
     // Try to get battery information if available
     if ("getBattery" in navigator) {
@@ -124,18 +130,19 @@ export default function Menubar({
   return (
     <div
       ref={menuRef}
-      className={`fixed top-0 left-0 right-0 h-6 ${menuBgClass} z-50 flex items-center px-4 ${textClass} text-sm`}
+      className={`fixed top-0 left-0 right-0 h-6.5 sm:h-6 ${menuBgClass} z-50 flex items-center justify-between px-2.5 sm:px-4 ${textClass} text-xs sm:text-sm select-none overflow-x-hidden`}
     >
-      <div className="flex-1 flex items-center">
+      <div className="flex items-center min-w-0 mr-2">
         <button
-          className="flex items-center mr-4 hover:bg-white/10 px-2 py-0.5 rounded"
+          className="flex items-center mr-2 sm:mr-4 hover:bg-white/10 px-1.5 py-0.5 rounded cursor-pointer"
           onClick={() => toggleMenu("apple")}
+          aria-label="Apple Menu"
         >
-          <AppleIcon className="w-4 h-4" />
+          <AppleIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
         </button>
 
         {activeMenu === "apple" && (
-          <div className={`absolute top-6 left-2 ${dropdownBgClass} rounded-lg shadow-xl ${textClass} py-1 w-56`}>
+          <div className={`absolute top-7 left-2 ${dropdownBgClass} rounded-lg shadow-xl ${textClass} py-1 w-52 max-w-[calc(100vw-1rem)] z-50`}>
             <button className={`w-full text-left px-4 py-1 ${hoverClass}`}>About This Mac</button>
             <div className="border-t border-gray-700 my-1"></div>
             <button className={`w-full text-left px-4 py-1 ${hoverClass}`}>System Settings...</button>
@@ -159,7 +166,9 @@ export default function Menubar({
 
         {activeWindow && (
           <button
-            className={`mr-4 font-medium hover:bg-white/10 px-2 py-0.5 rounded ${activeMenu === "app" ? "bg-white/10" : ""}`}
+            className={`font-semibold hover:bg-white/10 px-2 py-0.5 rounded truncate max-w-[120px] sm:max-w-[200px] cursor-pointer ${
+              activeMenu === "app" ? "bg-white/10" : ""
+            }`}
             onClick={() => toggleMenu("app")}
           >
             {activeWindow.title}
@@ -167,18 +176,18 @@ export default function Menubar({
         )}
       </div>
 
-      <div className="flex items-center space-x-3">
-        <span className="mr-1">{batteryLevel}%</span>
+      <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
+        <span className="mr-0.5 hidden sm:inline">{batteryLevel}%</span>
         <div className="relative">
-          <div className="w-6 h-3 border border-current rounded-sm relative">
+          <div className="w-5 h-2.5 sm:w-6 sm:h-3 border border-current rounded-xs relative">
             <div className="absolute top-0 left-0 bottom-0 bg-current" style={{ width: `${batteryLevel}%` }}></div>
-            <div className="absolute -right-1 top-1/2 transform -translate-y-1/2 w-1 h-2 bg-current rounded-r-sm"></div>
-            {isCharging && <div className="absolute inset-0 flex items-center justify-center text-xs">⚡</div>}
+            <div className="absolute -right-1 top-1/2 transform -translate-y-1/2 w-0.5 sm:w-1 h-1.5 sm:h-2 bg-current rounded-r-xs"></div>
+            {isCharging && <div className="absolute inset-0 flex items-center justify-center text-[9px]">⚡</div>}
           </div>
         </div>
 
         <div className="relative">
-          <button className="wifi-icon" onClick={toggleWifiPopup}>
+          <button className="wifi-icon p-1 hover:bg-white/10 rounded cursor-pointer" onClick={toggleWifiPopup} aria-label="Wi-Fi">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -187,7 +196,7 @@ export default function Menubar({
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="w-5 h-5"
+              className="w-3.5 h-3.5 sm:w-4 sm:h-4"
             >
               {wifiEnabled ? (
                 <>
@@ -213,7 +222,7 @@ export default function Menubar({
           {showWifiToggle && (
             <div
               ref={wifiRef}
-              className={`absolute top-6 right-0 ${dropdownBgClass} rounded-lg shadow-xl ${textClass} py-3 px-4 w-64`}
+              className={`absolute top-7 right-0 ${dropdownBgClass} rounded-lg shadow-xl ${textClass} py-3 px-4 w-60 max-w-[calc(100vw-1rem)] z-50`}
             >
               <div className="flex items-center justify-between">
                 <span className="font-medium">Wi-Fi</span>
@@ -226,15 +235,15 @@ export default function Menubar({
           )}
         </div>
 
-        <button onClick={onSpotlightClick}>
-          <Search className="w-4 h-4" />
+        <button onClick={onSpotlightClick} className="hidden sm:flex items-center p-1 hover:bg-white/10 rounded cursor-pointer" aria-label="Spotlight">
+          <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
         </button>
 
-        <button onClick={onControlCenterClick} className="flex items-center justify-center">
+        <button onClick={onControlCenterClick} className="flex items-center justify-center p-1 hover:bg-white/10 rounded cursor-pointer" aria-label="Control Center">
           <img
             src="/control-center-icon.webp"
             alt="Control Center"
-            className="w-4 h-4"
+            className="w-3.5 h-3.5 sm:w-4 sm:h-4"
             style={{
               filter: isDarkMode ? "invert(1)" : "none",
               opacity: 0.9,
@@ -242,7 +251,10 @@ export default function Menubar({
           />
         </button>
 
-        <span suppressHydrationWarning>{formattedTime}</span>
+        <span className="font-medium whitespace-nowrap text-xs" suppressHydrationWarning>
+          <span className="hidden sm:inline">{formattedTime}</span>
+          <span className="sm:hidden">{formattedShortTime}</span>
+        </span>
       </div>
     </div>
   )

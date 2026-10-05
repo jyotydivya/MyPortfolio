@@ -2,12 +2,14 @@
 
 import type React from "react"
 import { useState } from "react"
+import { ChevronLeft } from "lucide-react"
 
 interface NotesProps {
   isDarkMode?: boolean
 }
 
 export default function Notes({ isDarkMode = true }: NotesProps) {
+  const [mobileView, setMobileView] = useState<"list" | "detail">("list")
   const [notes, setNotes] = useState([
     {
       id: 1,
@@ -130,6 +132,7 @@ May 2026 – July 2026
     if (note) {
       setEditableContent(note.content)
     }
+    setMobileView("detail")
   }
 
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -153,10 +156,14 @@ May 2026 – July 2026
   const selectedBg = isDarkMode ? "bg-gray-700" : "bg-gray-300"
 
   return (
-    <div className={`flex h-full ${bgColor} ${textColor}`}>
+    <div className={`flex h-full ${bgColor} ${textColor} select-text overflow-hidden`}>
       {/* Sidebar */}
-      <div className={`w-64 ${sidebarBg} border-r ${borderColor} flex flex-col`}>
-        <div className="p-3 border-b border-gray-700 flex justify-between items-center">
+      <div
+        className={`w-full sm:w-64 ${sidebarBg} border-r ${borderColor} flex-col shrink-0 ${
+          mobileView === "detail" ? "hidden sm:flex" : "flex"
+        }`}
+      >
+        <div className="p-3 border-b border-gray-700/40 flex justify-between items-center">
           <h2 className="font-semibold text-sm">Notes</h2>
           <span className="text-xs text-gray-400">{notes.length} Notes</span>
         </div>
@@ -164,7 +171,7 @@ May 2026 – July 2026
           {notes.map((note) => (
             <div
               key={note.id}
-              className={`p-3 cursor-pointer border-b border-gray-700/30 transition-colors ${
+              className={`p-3 cursor-pointer border-b border-gray-700/20 transition-colors ${
                 selectedNoteId === note.id ? selectedBg : hoverBg
               }`}
               onClick={() => handleNoteSelect(note.id)}
@@ -180,19 +187,32 @@ May 2026 – July 2026
       </div>
 
       {/* Note content */}
-      <div className="flex-1 flex flex-col">
+      <div
+        className={`flex-1 flex-col overflow-hidden ${
+          mobileView === "list" ? "hidden sm:flex" : "flex"
+        }`}
+      >
         {selectedNote && (
           <>
-            <div className={`p-3 border-b ${borderColor} flex justify-between items-center`}>
-              <div>
-                <h2 className="font-semibold">{selectedNote.title}</h2>
-                <p className="text-xs text-gray-500">{selectedNote.date}</p>
+            <div className={`p-3 border-b ${borderColor} flex justify-between items-center shrink-0`}>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setMobileView("list")}
+                  className="sm:hidden flex items-center gap-1 px-2.5 py-1 rounded bg-black/10 dark:bg-white/10 text-xs font-semibold hover:bg-blue-600 hover:text-white transition-colors cursor-pointer"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                  <span>Notes</span>
+                </button>
+                <div>
+                  <h2 className="font-semibold text-sm truncate max-w-[180px] sm:max-w-none">{selectedNote.title}</h2>
+                  <p className="text-xs text-gray-500">{selectedNote.date}</p>
+                </div>
               </div>
-              <span className="text-xs text-gray-400 px-2 py-1 rounded bg-gray-500/10">Editable</span>
+              <span className="text-[11px] text-gray-400 px-2 py-0.5 rounded bg-gray-500/10">Editable</span>
             </div>
-            <div className="flex-1 p-4 overflow-auto">
+            <div className="flex-1 p-3 sm:p-5 overflow-auto">
               <textarea
-                className={`w-full h-full resize-none font-mono text-sm leading-relaxed ${bgColor} ${textColor} focus:outline-none`}
+                className={`w-full h-full resize-none font-mono text-xs sm:text-sm leading-relaxed ${bgColor} ${textColor} focus:outline-none`}
                 value={editableContent}
                 onChange={handleContentChange}
               />

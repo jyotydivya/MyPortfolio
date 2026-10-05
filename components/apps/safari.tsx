@@ -386,14 +386,14 @@ Type your question in the search bar above or choose a suggested topic below!`,
       <div className={`${toolbarBg} border-b ${borderColor} px-3 py-2 flex items-center gap-2 shrink-0 select-none shadow-sm`}>
         <div className="flex items-center gap-1">
           <button
-            className={`p-1.5 rounded-md ${isDarkMode ? "hover:bg-gray-700" : "hover:bg-gray-200"} text-gray-400`}
+            className={`hidden sm:flex p-1.5 rounded-md ${isDarkMode ? "hover:bg-gray-700" : "hover:bg-gray-200"} text-gray-400`}
             onClick={() => setActiveTab("home")}
             title="Go to Home"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
           <button
-            className={`p-1.5 rounded-md ${isDarkMode ? "hover:bg-gray-700" : "hover:bg-gray-200"} text-gray-400`}
+            className={`hidden sm:flex p-1.5 rounded-md ${isDarkMode ? "hover:bg-gray-700" : "hover:bg-gray-200"} text-gray-400`}
             onClick={() => setActiveTab("ai")}
             title="Go to Safari AI"
           >
@@ -419,8 +419,8 @@ Type your question in the search bar above or choose a suggested topic below!`,
         </div>
 
         {/* Safari Smart Search / Address Bar with AI Badge */}
-        <div className={`flex-1 flex items-center ${inputBg} rounded-xl px-3 py-1.5 border border-transparent focus-within:border-purple-500/60 focus-within:ring-2 focus-within:ring-purple-500/20 transition-all shadow-inner`}>
-          <div className="flex items-center gap-1.5 mr-2 shrink-0">
+        <div className={`flex-1 flex items-center ${inputBg} rounded-xl px-2.5 sm:px-3 py-1.5 border border-transparent focus-within:border-purple-500/60 focus-within:ring-2 focus-within:ring-purple-500/20 transition-all shadow-inner`}>
+          <div className="flex items-center gap-1.5 mr-1.5 sm:mr-2 shrink-0">
             <div className="w-4 h-4 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-xs">
               <Sparkles className="w-2.5 h-2.5 text-white" />
             </div>
@@ -438,7 +438,7 @@ Type your question in the search bar above or choose a suggested topic below!`,
                 handleExecuteSearch(url)
               }
             }}
-            placeholder="Ask questions about Divya's projects, CUDA kernels, multi-agent AI, or enter URL..."
+            placeholder="Ask questions about Divya's projects, CUDA kernels, AI..."
             className={`w-full bg-transparent focus:outline-none text-xs sm:text-[13px] ${textColor}`}
           />
 

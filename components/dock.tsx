@@ -68,13 +68,32 @@ export default function Dock({ onAppClick, onLaunchpadClick, activeAppIds, isDar
       return
     }
 
+    const w = typeof globalThis.window !== "undefined" ? globalThis.window.innerWidth : 1200
+    const h = typeof globalThis.window !== "undefined" ? globalThis.window.innerHeight : 800
     const isWideApp = app.id === "vscode" || app.id === "resume" || app.id === "mail" || app.id === "safari"
+
+    const size =
+      w < 768
+        ? { width: w, height: h - 26 }
+        : w < 1024
+          ? { width: Math.min(isWideApp ? 920 : 780, w - 24), height: Math.min(640, h - 80) }
+          : isWideApp
+            ? { width: 960, height: 650 }
+            : { width: 800, height: 600 }
+
+    const position =
+      w < 768
+        ? { x: 0, y: 26 }
+        : w < 1024
+          ? { x: Math.max(12, Math.floor((w - size.width) / 2)), y: 36 }
+          : { x: Math.random() * 100 + 80, y: Math.random() * 50 + 40 }
+
     onAppClick({
       id: app.id,
       title: app.title,
       component: app.component,
-      position: { x: Math.random() * 120 + 80, y: Math.random() * 60 + 40 },
-      size: isWideApp ? { width: 960, height: 650 } : { width: 800, height: 600 },
+      position,
+      size,
     })
 
     // Close mobile menu after clicking an app

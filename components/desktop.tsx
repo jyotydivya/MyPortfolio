@@ -63,15 +63,46 @@ export default function Desktop({
   }, [initialBrightness])
 
   const openApp = (app: AppWindow) => {
+    let responsiveApp = { ...app }
+    if (typeof globalThis.window !== "undefined") {
+      const w = globalThis.window.innerWidth
+      const h = globalThis.window.innerHeight
+      if (w < 768) {
+        // Mobile phone: Full screen under menubar
+        responsiveApp = {
+          ...app,
+          position: { x: 0, y: 26 },
+          size: { width: w, height: h - 26 },
+        }
+      } else if (w < 1024) {
+        // Tablet: Constrain within tablet bounds
+        const targetWidth = Math.min(app.size.width, w - 24)
+        const targetHeight = Math.min(app.size.height, h - 80)
+        responsiveApp = {
+          ...app,
+          position: {
+            x: Math.max(12, Math.floor((w - targetWidth) / 2)),
+            y: Math.max(28, 36),
+          },
+          size: { width: targetWidth, height: targetHeight },
+        }
+      }
+    }
+
     // Check if app is already open
-    const isOpen = openWindows.some((window) => window.id === app.id)
+    const isOpen = openWindows.some((window) => window.id === responsiveApp.id)
 
     if (!isOpen) {
-      setOpenWindows((prev) => [...prev, app])
+      setOpenWindows((prev) => [...prev, responsiveApp])
+    } else {
+      // Bring existing window into view / active
+      setOpenWindows((prev) =>
+        prev.map((w) => (w.id === responsiveApp.id ? { ...w, position: responsiveApp.position, size: responsiveApp.size } : w))
+      )
     }
 
     // Set as active window
-    setActiveWindowId(app.id)
+    setActiveWindowId(responsiveApp.id)
 
     // Close launchpad if open
     if (showLaunchpad) {
@@ -135,7 +166,7 @@ export default function Desktop({
     <div className="relative">
       <div
         ref={desktopRef}
-        className={`relative h-screen w-screen overflow-hidden ${isDarkMode ? "dark" : ""}`}
+        className={`relative h-screen h-[100dvh] w-screen overflow-hidden ${isDarkMode ? "dark" : ""}`}
         onClick={handleDesktopClick}
       >
         <Wallpaper isDarkMode={isDarkMode} />

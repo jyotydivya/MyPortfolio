@@ -32,6 +32,7 @@ type TabType = "simulator.py" | "README.md" | "requirements.txt" | "simulation_r
 export default function VSCode({ isDarkMode = true }: VSCodeProps) {
   const [activeTab, setActiveTab] = useState<TabType>("simulator.py")
   const [isFolderOpen, setIsFolderOpen] = useState(true)
+  const [showExplorer, setShowExplorer] = useState(false)
   const [showTerminal, setShowTerminal] = useState(false)
   const [isRunning, setIsRunning] = useState(false)
   const [simulationCount, setSimulationCount] = useState(1)
@@ -498,31 +499,36 @@ if __name__ == "__main__":
       )}
 
       {/* Top Titlebar */}
-      <div className={`h-10 ${titlebarBg} flex items-center justify-between px-3 border-b ${borderCol} shrink-0`}>
-        <div className="flex items-center gap-2">
-          <Code2 className="w-4 h-4 text-[#007acc]" />
-          <span className={`text-xs font-sans font-semibold tracking-tight ${isDarkMode ? "text-gray-100" : "text-gray-800"}`}>
-            Collective-Intelligence — Visual Studio Code
+      <div className={`h-10 ${titlebarBg} flex items-center justify-between px-2 sm:px-3 border-b ${borderCol} shrink-0`}>
+        <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 mr-2">
+          <Code2 className="w-4 h-4 text-[#007acc] shrink-0" />
+          <span className={`text-xs font-sans font-semibold tracking-tight truncate ${isDarkMode ? "text-gray-100" : "text-gray-800"}`}>
+            <span className="hidden sm:inline">Collective-Intelligence — Visual Studio Code</span>
+            <span className="sm:hidden">Collective-Intelligence</span>
           </span>
         </div>
 
         {/* Action Controls */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {/* PRIMARY RUN SIMULATOR BUTTON */}
           <button
             onClick={handleRunSimulation}
             disabled={isRunning}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-md bg-[#007acc] hover:bg-[#0098ff] active:scale-95 text-white text-xs font-semibold shadow transition-all cursor-pointer disabled:opacity-50"
+            className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 rounded-md bg-[#007acc] hover:bg-[#0098ff] active:scale-95 text-white text-xs font-semibold shadow transition-all cursor-pointer disabled:opacity-50"
             title="Execute simulation to generate and view final simulation plots"
           >
             <Play className={`w-3.5 h-3.5 fill-current ${isRunning ? "animate-spin" : ""}`} />
-            <span>{isRunning ? "Running Simulation..." : "Run Simulator"}</span>
+            <span className="hidden sm:inline">{isRunning ? "Running Simulation..." : "Run Simulator"}</span>
+            <span className="sm:hidden">{isRunning ? "..." : "Run"}</span>
           </button>
 
           {/* Simulation Results Tab Button */}
           <button
-            onClick={() => setActiveTab("results")}
-            className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
+            onClick={() => {
+              setActiveTab("results")
+              setShowExplorer(false)
+            }}
+            className={`px-2.5 sm:px-3 py-1.5 rounded-md text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
               activeTab === "results"
                 ? "bg-[#094771] text-white shadow-sm ring-1 ring-[#007acc]"
                 : isDarkMode
@@ -533,6 +539,7 @@ if __name__ == "__main__":
           >
             <BarChart3 className="w-3.5 h-3.5 text-amber-400" />
             <span className="hidden sm:inline">Final Simulations</span>
+            <span className="sm:hidden">Results</span>
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
           </button>
 
@@ -540,32 +547,35 @@ if __name__ == "__main__":
             href="https://github.com/jyotydivya/Collective-Intelligence"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md hover:bg-black/10 dark:hover:bg-white/10 text-xs font-medium opacity-90 hover:opacity-100 transition-colors"
+            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-md hover:bg-black/10 dark:hover:bg-white/10 text-xs font-medium opacity-90 hover:opacity-100 transition-colors"
           >
-            <span>GitHub Repo</span>
+            <span>GitHub</span>
             <ExternalLink className="w-3 h-3" />
           </a>
         </div>
       </div>
 
       {/* Main Workspace Area */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden relative">
         {/* Activity Bar Left */}
-        <div className={`w-12 ${sidebarBg} border-r ${borderCol} flex flex-col items-center py-3 gap-5 shrink-0`}>
+        <div className={`w-12 ${sidebarBg} border-r ${borderCol} flex flex-col items-center py-3 gap-5 shrink-0 z-40`}>
           <div
-            onClick={() => setActiveTab("simulator.py")}
+            onClick={() => setShowExplorer((prev) => !prev)}
             className={`p-2 rounded-lg cursor-pointer transition-colors ${
-              activeTab === "simulator.py"
+              showExplorer || activeTab === "simulator.py"
                 ? "border-l-2 border-[#007acc] text-[#007acc] bg-black/5 dark:bg-white/5"
                 : "text-gray-400 hover:text-white"
             }`}
-            title="Explorer (Files)"
+            title="Toggle File Explorer"
           >
             <Folder className="w-5 h-5" />
           </div>
 
           <div
-            onClick={() => setActiveTab("results")}
+            onClick={() => {
+              setActiveTab("results")
+              setShowExplorer(false)
+            }}
             className={`p-2 rounded-lg cursor-pointer transition-colors relative ${
               activeTab === "results"
                 ? "border-l-2 border-amber-400 text-amber-400 bg-black/5 dark:bg-white/5"
@@ -589,7 +599,11 @@ if __name__ == "__main__":
         </div>
 
         {/* File Explorer Sidebar - High-Contrast & Readable Typography */}
-        <div className={`w-64 ${sidebarBg} border-r ${borderCol} flex flex-col shrink-0 overflow-y-auto`}>
+        <div
+          className={`${
+            showExplorer ? "flex absolute left-12 top-0 bottom-0 z-30 shadow-2xl" : "hidden"
+          } md:relative md:flex w-60 sm:w-64 ${sidebarBg} border-r ${borderCol} flex-col shrink-0 overflow-y-auto`}
+        >
           <div className="p-3 text-[11px] font-bold tracking-wider uppercase flex items-center justify-between border-b border-gray-500/15">
             <span className={isDarkMode ? "text-gray-300 font-semibold" : "text-gray-700 font-semibold"}>
               EXPLORER: PROJECT
@@ -611,7 +625,10 @@ if __name__ == "__main__":
               <div className="ml-3 pl-2.5 border-l border-gray-500/25 space-y-1 mt-1">
                 {/* File: simulator.py */}
                 <button
-                  onClick={() => setActiveTab("simulator.py")}
+                  onClick={() => {
+                    setActiveTab("simulator.py")
+                    setShowExplorer(false)
+                  }}
                   className={`w-full text-left px-3 py-2 rounded-md flex items-center gap-2.5 text-[13.5px] transition-colors cursor-pointer ${
                     activeTab === "simulator.py"
                       ? "bg-[#094771] text-white font-semibold shadow-sm border-l-2 border-[#007acc]"
@@ -628,7 +645,10 @@ if __name__ == "__main__":
 
                 {/* Final Simulations Tab Shortcut */}
                 <button
-                  onClick={() => setActiveTab("results")}
+                  onClick={() => {
+                    setActiveTab("results")
+                    setShowExplorer(false)
+                  }}
                   className={`w-full text-left px-3 py-2 rounded-md flex items-center gap-2.5 text-[13.5px] transition-colors cursor-pointer ${
                     activeTab === "results"
                       ? "bg-[#094771] text-white font-semibold shadow-sm border-l-2 border-amber-400"
@@ -643,7 +663,10 @@ if __name__ == "__main__":
 
                 {/* File: README.md */}
                 <button
-                  onClick={() => setActiveTab("README.md")}
+                  onClick={() => {
+                    setActiveTab("README.md")
+                    setShowExplorer(false)
+                  }}
                   className={`w-full text-left px-3 py-2 rounded-md flex items-center gap-2.5 text-[13.5px] transition-colors cursor-pointer ${
                     activeTab === "README.md"
                       ? "bg-[#094771] text-white font-semibold shadow-sm border-l-2 border-[#007acc]"
@@ -658,7 +681,10 @@ if __name__ == "__main__":
 
                 {/* File: requirements.txt */}
                 <button
-                  onClick={() => setActiveTab("requirements.txt")}
+                  onClick={() => {
+                    setActiveTab("requirements.txt")
+                    setShowExplorer(false)
+                  }}
                   className={`w-full text-left px-3 py-2 rounded-md flex items-center gap-2.5 text-[13.5px] transition-colors cursor-pointer ${
                     activeTab === "requirements.txt"
                       ? "bg-[#094771] text-white font-semibold shadow-sm border-l-2 border-[#007acc]"
@@ -673,7 +699,10 @@ if __name__ == "__main__":
 
                 {/* File: simulation_results.csv */}
                 <button
-                  onClick={() => setActiveTab("simulation_results.csv")}
+                  onClick={() => {
+                    setActiveTab("simulation_results.csv")
+                    setShowExplorer(false)
+                  }}
                   className={`w-full text-left px-3 py-2 rounded-md flex items-center gap-2.5 text-[13.5px] transition-colors cursor-pointer ${
                     activeTab === "simulation_results.csv"
                       ? "bg-[#094771] text-white font-semibold shadow-sm border-l-2 border-[#007acc]"

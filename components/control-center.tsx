@@ -67,7 +67,7 @@ export default function ControlCenter({
 
   return (
     <div
-      className="fixed top-8 right-4 w-80 bg-gray-800/80 backdrop-blur-xl rounded-xl overflow-hidden shadow-2xl z-40"
+      className="fixed top-8 right-2 sm:right-4 w-[calc(100vw-1rem)] sm:w-80 max-w-sm bg-gray-800/80 backdrop-blur-xl rounded-xl overflow-hidden shadow-2xl z-50"
       onClick={(e) => e.stopPropagation()}
     >
       <div className="p-4">

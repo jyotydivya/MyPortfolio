@@ -24,6 +24,7 @@ import {
   Clock,
   RefreshCw,
   Sparkles,
+  ChevronLeft,
 } from "lucide-react"
 
 interface MailProps {
@@ -55,6 +56,7 @@ export default function MailApp({ isDarkMode = true }: MailProps) {
   const [searchQuery, setSearchQuery] = useState("")
   const [sentSuccess, setSentSuccess] = useState(false)
   const [isSending, setIsSending] = useState(false)
+  const [mobileView, setMobileView] = useState<"list" | "detail">("list")
 
   // Compose State
   const [composeFrom, setComposeFrom] = useState("")
@@ -362,8 +364,8 @@ export default function MailApp({ isDarkMode = true }: MailProps) {
 
       {/* Main 3-Column macOS Mail Layout */}
       <div className="flex-1 flex overflow-hidden">
-        {/* COLUMN 1: MAILBOXES SIDEBAR */}
-        <div className={`w-48 ${sidebarBg} border-r ${borderCol} flex flex-col shrink-0 p-2 space-y-1`}>
+        {/* COLUMN 1: MAILBOXES SIDEBAR (Hidden on mobile, visible on desktop/tablet) */}
+        <div className={`hidden md:flex w-44 lg:w-48 ${sidebarBg} border-r ${borderCol} flex-col shrink-0 p-2 space-y-1`}>
           <div className="px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-400">
             Mailboxes
           </div>
@@ -372,6 +374,7 @@ export default function MailApp({ isDarkMode = true }: MailProps) {
             onClick={() => {
               setActiveFolder("inbox")
               setIsComposing(false)
+              setMobileView("list")
             }}
             className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md font-medium transition-colors cursor-pointer ${
               activeFolder === "inbox" && !isComposing
@@ -394,6 +397,7 @@ export default function MailApp({ isDarkMode = true }: MailProps) {
             onClick={() => {
               setActiveFolder("starred")
               setIsComposing(false)
+              setMobileView("list")
             }}
             className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md font-medium transition-colors cursor-pointer ${
               activeFolder === "starred" && !isComposing
@@ -416,6 +420,7 @@ export default function MailApp({ isDarkMode = true }: MailProps) {
             onClick={() => {
               setActiveFolder("sent")
               setIsComposing(false)
+              setMobileView("list")
             }}
             className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md font-medium transition-colors cursor-pointer ${
               activeFolder === "sent" && !isComposing
@@ -438,6 +443,7 @@ export default function MailApp({ isDarkMode = true }: MailProps) {
             onClick={() => {
               setActiveFolder("trash")
               setIsComposing(false)
+              setMobileView("list")
             }}
             className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md font-medium transition-colors cursor-pointer ${
               activeFolder === "trash" && !isComposing
@@ -471,7 +477,47 @@ export default function MailApp({ isDarkMode = true }: MailProps) {
         </div>
 
         {/* COLUMN 2: MESSAGE LIST COLUMN */}
-        <div className={`w-72 sm:w-80 ${listBg} border-r ${borderCol} flex flex-col shrink-0 overflow-y-auto`}>
+        <div
+          className={`w-full md:w-72 lg:w-80 ${listBg} border-r ${borderCol} flex-col shrink-0 overflow-y-auto ${
+            mobileView === "detail" && !isComposing ? "hidden md:flex" : "flex"
+          }`}
+        >
+          {/* Mobile Folder Selector Pills */}
+          <div className="md:hidden flex items-center gap-1.5 p-2 overflow-x-auto no-scrollbar border-b border-gray-500/15">
+            <button
+              onClick={() => setActiveFolder("inbox")}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-semibold whitespace-nowrap cursor-pointer ${
+                activeFolder === "inbox" ? "bg-[#007acc] text-white" : "bg-black/10 dark:bg-white/5"
+              }`}
+            >
+              Inbox ({emails.filter((e) => e.folder === "inbox").length})
+            </button>
+            <button
+              onClick={() => setActiveFolder("starred")}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-semibold whitespace-nowrap cursor-pointer ${
+                activeFolder === "starred" ? "bg-[#007acc] text-white" : "bg-black/10 dark:bg-white/5"
+              }`}
+            >
+              Flagged ({emails.filter((e) => e.isStarred).length})
+            </button>
+            <button
+              onClick={() => setActiveFolder("sent")}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-semibold whitespace-nowrap cursor-pointer ${
+                activeFolder === "sent" ? "bg-[#007acc] text-white" : "bg-black/10 dark:bg-white/5"
+              }`}
+            >
+              Sent ({emails.filter((e) => e.folder === "sent").length})
+            </button>
+            <button
+              onClick={() => setActiveFolder("trash")}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-semibold whitespace-nowrap cursor-pointer ${
+                activeFolder === "trash" ? "bg-[#007acc] text-white" : "bg-black/10 dark:bg-white/5"
+              }`}
+            >
+              Trash
+            </button>
+          </div>
+
           <div className="p-2.5 border-b border-gray-500/15 flex items-center justify-between">
             <span className="font-bold text-xs capitalize">
               {activeFolder} ({filteredEmails.length})
@@ -493,7 +539,7 @@ export default function MailApp({ isDarkMode = true }: MailProps) {
                     onClick={() => {
                       setSelectedEmailId(email.id)
                       setIsComposing(false)
-                      // mark read
+                      setMobileView("detail")
                       setEmails((prev) =>
                         prev.map((e) => (e.id === email.id ? { ...e, isUnread: false } : e))
                       )
@@ -555,7 +601,11 @@ export default function MailApp({ isDarkMode = true }: MailProps) {
         </div>
 
         {/* COLUMN 3: READING & COMPOSE PANE (FILLS REMAINING SPACE 100%) */}
-        <div className={`flex-1 ${detailBg} flex flex-col overflow-hidden`}>
+        <div
+          className={`flex-1 ${detailBg} flex-col overflow-hidden ${
+            mobileView === "list" && !isComposing ? "hidden md:flex" : "flex"
+          }`}
+        >
           {isComposing ? (
             /* ========================================================= */
             /* APPLE MAIL COMPOSE PANE                                   */
@@ -568,8 +618,11 @@ export default function MailApp({ isDarkMode = true }: MailProps) {
                     <h3 className="font-bold text-sm sm:text-base">New Message to Divya Jyoty</h3>
                   </div>
                   <button
-                    onClick={() => setIsComposing(false)}
-                    className="text-xs text-gray-400 hover:text-white"
+                    onClick={() => {
+                      setIsComposing(false)
+                      setMobileView("list")
+                    }}
+                    className="text-xs text-gray-400 hover:text-white px-2 py-1 rounded bg-black/10 dark:bg-white/10"
                   >
                     Cancel
                   </button>
@@ -658,7 +711,16 @@ export default function MailApp({ isDarkMode = true }: MailProps) {
             /* READING PANE (FULL EMAIL DETAILS)                         */
             /* ========================================================= */
             <div className="flex-1 flex flex-col h-full overflow-y-auto p-4 sm:p-6 select-text">
-              <div className="max-w-3xl w-full mx-auto space-y-5">
+              <div className="max-w-3xl w-full mx-auto space-y-4">
+                {/* Mobile Back Button */}
+                <button
+                  onClick={() => setMobileView("list")}
+                  className="md:hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/10 dark:bg-white/10 hover:bg-[#007acc] hover:text-white transition-colors text-xs font-semibold cursor-pointer w-fit"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  <span>All Messages</span>
+                </button>
+
                 {/* Email Header */}
                 <div className="pb-4 border-b border-gray-500/20 space-y-3">
                   <div className="flex items-start justify-between gap-4">
